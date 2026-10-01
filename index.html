@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#121613" />
+    <meta name="description" content="A little space for your next big thing. A simple task tracker that saves your tasks in your browser." />
+    <title>test — A little focus goes a long way.</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <a class="brand" href="./index.html" aria-label="test home">
+          <span class="brand-icon" aria-hidden="true">✓</span>
+          <span>test<span class="brand-dot">.</span></span>
+        </a>
+        <span class="header-note"><span aria-hidden="true"></span>A little space to focus</span>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">LESS NOISE. MORE PROGRESS.</p>
+          <h1 id="page-title">One thing<br />at a <span>time.</span></h1>
+          <p class="intro-copy">Big days start with small steps.<br class="desktop-break" /> Make a list. Find your focus. Keep going.</p>
+          <div class="progress-card" aria-label="Your progress">
+            <div class="progress-heading"><span>YOUR PROGRESS</span><span id="progress-count">0 of 0 done</span></div>
+            <progress id="progress" max="100" value="0" aria-label="Tasks completed">0%</progress>
+            <p id="progress-message">Your next step starts here.</p>
+          </div>
+          <p class="local-note"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Saved in this browser. Just for you.</p>
+        </section>
+
+        <section class="workspace" aria-labelledby="tasks-heading">
+          <div class="workspace-heading"><div><p class="eyebrow">LET’S MAKE IT HAPPEN</p><h2 id="tasks-heading">Your tasks</h2></div><span class="task-count" id="active-count">0 left</span></div>
+          <form id="task-form" class="task-form">
+            <label class="sr-only" for="task-input">Add a task</label>
+            <input id="task-input" name="task" type="text" maxlength="200" placeholder="What’s your next small step?" autocomplete="off" required />
+            <button type="submit" class="add-button" aria-label="Add task"><span aria-hidden="true">+</span></button>
+          </form>
+          <p id="storage-warning" class="storage-warning" role="status" hidden></p>
+          <div class="list-toolbar">
+            <div class="filters" role="group" aria-label="Filter tasks">
+              <button type="button" data-filter="all" aria-pressed="true">All</button>
+              <button type="button" data-filter="active" aria-pressed="false">Active</button>
+              <button type="button" data-filter="done" aria-pressed="false">Done</button>
+            </div>
+            <button type="button" class="clear-button" id="clear-completed" disabled>Clear done</button>
+          </div>
+          <ul id="task-list" class="task-list" aria-label="Tasks"></ul>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="11" y="10" width="26" height="31" rx="5"/><path d="M19 10V7h10v3M18 21l3 3 6-6M18 32h12"/></svg></div>
+            <h3 id="empty-title">A fresh start looks good on you.</h3>
+            <p id="empty-copy">Add your first task above. Small is a great place to start.</p>
+          </div>
+          <div class="workspace-footer"><span id="list-summary">Make a little room for what matters.</span><span aria-hidden="true">↗</span></div>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>Small steps. Real progress.</span><span>Made to keep things simple.</span></footer>
+    </div>
+    <p id="announcement" class="sr-only" role="status" aria-live="polite"></p>
+  </body>
+</html>
