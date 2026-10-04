@@ -41,6 +41,15 @@
           </form>
           <p id="storage-warning" class="storage-warning" role="status" hidden></p>
           <div class="list-toolbar">
+            <div class="filters" role="group" aria-label="Task JSON backups">
+              <button type="button" id="btnExport" aria-label="Export all tasks as JSON">Export</button>
+              <button type="button" id="btnImport" aria-label="Import tasks from JSON" aria-describedby="import-help">Import</button>
+            </div>
+            <input id="importFile" type="file" accept=".json,application/json" aria-label="Select task JSON file" hidden />
+          </div>
+          <p id="import-help" class="sr-only">Import a JSON array of tasks with id, text, and completed fields. You will be asked to confirm before replacing your current tasks.</p>
+          <p id="transfer-status" class="storage-warning" role="status" hidden></p>
+          <div class="list-toolbar">
             <div class="filters" role="group" aria-label="Filter tasks">
               <button type="button" data-filter="all" aria-pressed="true">All</button>
               <button type="button" data-filter="active" aria-pressed="false">Active</button>
