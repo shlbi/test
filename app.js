@@ -1,5 +1,7 @@
 "use strict";
 
+// JSON import/export adapted from FocusFlow by Ahmed Hafez.
+// Copyright (c) 2025 amDev-Ahmed Hafez. MIT notice: FocusFlow-LICENSE.txt.
 (() => {
   const STORAGE_KEY = "test.tasks.v1";
   const form = document.getElementById("task-form");
@@ -9,6 +11,10 @@
   const clearButton = document.getElementById("clear-completed");
   const warning = document.getElementById("storage-warning");
   const announcement = document.getElementById("announcement");
+  const btnExport = document.getElementById("btnExport");
+  const btnImport = document.getElementById("btnImport");
+  const importFile = document.getElementById("importFile");
+  const transferStatus = document.getElementById("transfer-status");
   let filter = "all";
   let tasks = loadTasks();
 
@@ -59,6 +65,94 @@
   function announce(message) {
     announcement.textContent = message;
   }
+
+  function showTransferStatus(message) {
+    transferStatus.textContent = message;
+    transferStatus.hidden = false;
+  }
+
+  function validateImportedTasks(parsed) {
+    if (!Array.isArray(parsed)) throw new Error("Expected a task array");
+    const ids = new Set();
+    return parsed.map((task) => {
+      if (!task || typeof task !== "object" || Array.isArray(task) ||
+          typeof task.id !== "string" || !task.id ||
+          typeof task.text !== "string" || !task.text.trim() ||
+          typeof task.completed !== "boolean" || ids.has(task.id)) {
+        throw new Error("Invalid task");
+      }
+      ids.add(task.id);
+      return { id: task.id, text: task.text, completed: task.completed };
+    });
+  }
+
+  btnExport.addEventListener("click", () => {
+    transferStatus.hidden = true;
+    let url;
+    let link;
+    try {
+      const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: "application/json" });
+      url = URL.createObjectURL(blob);
+      link = document.createElement("a");
+      link.href = url;
+      link.download = "tasks.json";
+      document.body.append(link);
+      link.click();
+      announce("Task JSON download requested.");
+    } catch {
+      showTransferStatus("Tasks could not be exported. Your list has not changed.");
+    } finally {
+      if (link) link.remove();
+      if (url) setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  });
+
+  btnImport.addEventListener("click", () => {
+    importFile.value = "";
+    importFile.click();
+  });
+
+  importFile.addEventListener("change", () => {
+    const file = importFile.files[0];
+    importFile.value = "";
+    if (!file) return;
+    transferStatus.hidden = true;
+    btnImport.disabled = true;
+    const reader = new FileReader();
+    const finish = () => {
+      btnImport.disabled = false;
+      btnImport.focus();
+    };
+    reader.onload = () => {
+      let imported;
+      try {
+        imported = validateImportedTasks(JSON.parse(reader.result));
+      } catch {
+        showTransferStatus("Invalid JSON task file. Use an array of tasks with unique nonempty string ids, nonblank text, and boolean completed values. Your list has not changed.");
+        finish();
+        return;
+      }
+      if (confirm(`Replace all current tasks with ${imported.length} imported ${imported.length === 1 ? "task" : "tasks"}? This cannot be undone.`)) {
+        tasks = imported;
+        saveTasks();
+        render();
+        announce(`Imported ${tasks.length} ${tasks.length === 1 ? "task" : "tasks"}.`);
+      } else {
+        announce("Import cancelled. Your list has not changed.");
+      }
+      finish();
+    };
+    reader.onerror = reader.onabort = () => {
+      showTransferStatus("The file could not be read. Your list has not changed.");
+      finish();
+    };
+    try {
+      reader.readAsText(file);
+    } catch {
+      showTransferStatus("The file could not be read. Your list has not changed.");
+      finish();
+    }
+  });
 
   function createTaskItem(task) {
     const item = document.createElement("li");
